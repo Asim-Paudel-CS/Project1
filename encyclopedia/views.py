@@ -26,6 +26,8 @@ def to_htm(txtgiv):
     list_opened = False
     list_return_count = 0
 
+    currenttrack=""
+
     for char in txtgiv:
 
         #linebreak
@@ -142,9 +144,56 @@ def to_htm(txtgiv):
 
     return converted
 
-#htmconvertedmd = markdown2.markdown(util.get_entry("CSS"))
-htmconvertedmd = to_htm(util.get_entry("Git"))
+#htmconvertedmd = markdown2.markdown(util.get_entry("Git"))
+#htmconvertedmd = to_htm(util.get_entry("Git"))
 
+from django import forms
+
+class Newsearch(forms.Form):
+    searchcont = forms.CharField(label="Searchitm")
+
+class itmp():
+    def __init__(self,itemstr,priority):
+        self.itemstr = itemstr
+        self.priority = priority
+
+import operator
+    
 def index(request):
-    return render(request, "encyclopedia/index.html", {"entries": util.list_entries(),"fulltxt": htmconvertedmd})
+    if request.method == "POST":
+        cont = Newsearch(request.POST)
+        if cont.is_valid():
+            searched = cont.cleaned_data["searchcont"]
+            listentries = False
+        if util.get_entry(searched) == None:
+            listentries = True
+            newinst = []
+            items_found = []        
+            for item in util.list_entries():
+                newinst.append(itmp(item,0))
+            i=0
+            for eachinstance in newinst:
+                for char in searched:
+                    for charitm in eachinstance.itemstr:
+                        if str.lower(char) == str.lower(charitm):
+                            newinst[i].priority += 1
+                i+=1
+            newinst = sorted(newinst, key=operator.attrgetter('priority'), reverse = True) 
+            for item in newinst:
+                if item.priority >= 1:
+                    items_found.append(item.itemstr)
+            return render(request, "encyclopedia/index.html", {"entries": items_found,"listcheck": listentries,"searchcont": Newsearch()})
+        else:
+            return render(request,"encyclopedia/index.html",{"fulltxt": markdown2.markdown(util.get_entry(searched)),"listcheck": listentries,"searchcont": Newsearch()})
+    else:
+        listentries = True
+        return render(request, "encyclopedia/index.html", {"entries": util.list_entries(),"listcheck": listentries,"searchcont": Newsearch()})
+
+def content(request,titleinp):
+    listentries = False
+    return render(request,"encyclopedia/index.html",{"fulltxt": markdown2.markdown(util.get_entry(titleinp)),"listcheck": listentries,"searchcont": Newsearch()})
+
+
+
+
 

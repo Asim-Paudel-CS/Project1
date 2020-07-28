@@ -5,33 +5,50 @@
 <html lang="en">
     <head>
         <title>{% block title %}{% endblock %}</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <link href="{% static 'encyclopedia/styles.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{% static 'encyclopedia/styles.css' %}">
+        <meta name="viewport" content="width=device-width", initial-scale=1.0"> 
+        <style>
+            .pagebg{
+                position: fixed;
+                background-image: url(static/encyclopedia/bg.jpg);
+                background-size: cover;
+                height: 100vh;
+                width: 100vw;
+                top: 0; right: 0; bottom: 0; left: 0;
+                z-index: -1;
+                overflow-x: hidden;
+            }
+        </style>       
     </head>
     <body>
+        <div class=pagebg></div>
         <div class="row">
-            <div class="sidebar col-lg-2 col-md-3">
-                <h2>Wiki</h2>
-                <form>
-                    <input class="search" type="text" name="q" placeholder="Search Encyclopedia">
-                </form>
-                <div>
-                    <a href="{% url 'index' %}">Home</a>
-                </div>
-                <div>
-                    Create New Page
-                </div>
-                <div>
-                    Random Page
-                </div>
-                {% block nav %}
-                {% endblock %}
+            <div class="col-lg-3 col-xl-3 d-none d-lg-block leftcolm">
+                <div class="headings">Search Our Wiki</div> 
+                <div class="searchbar">
+                    <!--<form action="{% url 'homepage:index' %}" method="post">
+                        {% csrf_token %}
+                        <input type="text" name="task">
+                        <input type="submit">
+                    </form>-->                  
+                    <form action="{% url 'homepage:index' %}" method="POST">
+                        {% csrf_token %}
+                        {{ searchcont }}
+                        <input type="submit" value="SEARCH">
+                    </form>
+                </div> 
+                {%block sidebar %}         
+                {%endblock%}
             </div>
-            <div class="main col-lg-10 col-md-9">
+            <div class="col-lg-1 col-xl-1 d-none d-lg-block">
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7 col-xl-7 rightcolm">
                 {% block body %}
                 {% endblock %}
+                
             </div>
-        </div>
-
+            <div class="col-lg-1 col-xl-1 d-none d-lg-block">
+            </div>
     </body>
 </html>

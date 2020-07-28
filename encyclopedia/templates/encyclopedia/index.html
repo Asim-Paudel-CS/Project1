@@ -4,14 +4,18 @@
     Encyclopedia
 {% endblock %}
 
-{% block body %}
-    <h1>All Pages</h1>
+{% block sidebar %}
+Sidebar content
+{% endblock %}
 
+{% block body %}
+    {% if listcheck %}
+    <h1>All Pages</h1>
     <ul>
         {% for entry in entries %}
             <li>{{ entry }}</li>
         {% endfor %}
     </ul>
+    {% endif %}
     {{fulltxt|safe}}
-
 {% endblock %}
