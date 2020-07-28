@@ -7,22 +7,31 @@
         <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="{% static 'encyclopedia/styles.css' %}">
-        <meta name="viewport" content="width=device-width", initial-scale=1.0"> 
+        <meta name="viewport" content="width=device-width", initial-scale=1.0">  
         <style>
-            .pagebg{
-                position: fixed;
-                background-image: url(static/encyclopedia/bg.jpg);
-                background-size: cover;
-                height: 100vh;
-                width: 100vw;
-                top: 0; right: 0; bottom: 0; left: 0;
-                z-index: -1;
-                overflow-x: hidden;
-            }
-        </style>       
-    </head>
+        .pagebg{
+            position: fixed;
+            background-image: url(static/encyclopedia/bg.jpg);
+            background-size: cover;
+            height: 100vh;
+            width: 100vw;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index: -1;
+            overflow-x: hidden;
+          }
+        </style>
+        </head>
     <body>
         <div class=pagebg></div>
+        <div class=topbar>
+            <div class="searchbar topsearchbar">               
+                <form action="{% url 'homepage:index' %}" method="POST">
+                    {% csrf_token %}
+                    {{ searchcont }}
+                    <input type="submit" value="SEARCH">
+                </form>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-3 col-xl-3 d-none d-lg-block leftcolm">
                 <div class="headings">Search Our Wiki</div> 
@@ -35,6 +44,7 @@
                     <form action="{% url 'homepage:index' %}" method="POST">
                         {% csrf_token %}
                         {{ searchcont }}
+                        <br>
                         <input type="submit" value="SEARCH">
                     </form>
                 </div> 

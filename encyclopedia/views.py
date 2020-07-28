@@ -150,7 +150,7 @@ def to_htm(txtgiv):
 from django import forms
 
 class Newsearch(forms.Form):
-    searchcont = forms.CharField(label="Searchitm")
+    searchcont = forms.CharField(label="")
 
 class itmp():
     def __init__(self,itemstr,priority):
@@ -160,6 +160,7 @@ class itmp():
 import operator
     
 def index(request):
+    listentries = False
     if request.method == "POST":
         cont = Newsearch(request.POST)
         if cont.is_valid():
@@ -191,7 +192,7 @@ def index(request):
 
 def content(request,titleinp):
     listentries = False
-    return render(request,"encyclopedia/index.html",{"fulltxt": markdown2.markdown(util.get_entry(titleinp)),"listcheck": listentries,"searchcont": Newsearch()})
+    return render(request,"encyclopedia/index.html",{"titleurl":titleinp,"fulltxt": markdown2.markdown(util.get_entry(titleinp)),"listcheck": listentries,"searchcont": Newsearch()})
 
 
 

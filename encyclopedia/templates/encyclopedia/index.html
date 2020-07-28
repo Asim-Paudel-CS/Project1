@@ -1,11 +1,14 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    Encyclopedia
+{% if listcheck %}
+Encyclopedia
+{% else %}
+{{titleurl}}
+{% endif %}
 {% endblock %}
 
 {% block sidebar %}
-Sidebar content
 {% endblock %}
 
 {% block body %}
@@ -13,7 +16,7 @@ Sidebar content
     <h1>All Pages</h1>
     <ul>
         {% for entry in entries %}
-            <li>{{ entry }}</li>
+            <li><a href="/{{ entry }}" style = "color:black" >{{entry}}</a></li>
         {% endfor %}
     </ul>
     {% endif %}
