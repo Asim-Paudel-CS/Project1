@@ -185,6 +185,18 @@ def to_htm(txtgiv):
         if char != "#" and char != "\n" and char != "\r" and char != "*" and char != "[" and char != "]" and char != "(" and char != ")" and not link_opened and not list_opened:
             converted += char   
 
+    if list_opened == True:
+            list_texts.append(list_text)
+            converted += "<ul>"
+            for txt in list_texts:
+                converted += "<li>"+txt+"</li>"
+            converted += "</ul>"
+            list_itm=False
+            list_opened=False
+            list_return_count = 0 
+            list_texts = [] 
+
+
     return converted
 
 def searchfunction(cont,request):
