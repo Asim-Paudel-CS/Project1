@@ -9,11 +9,15 @@ import markdown2
 class Newsearch(forms.Form):
     searchcont = forms.CharField(label="")
 
+
 class itmp():
     def __init__(self,itemstr,priority):
         self.itemstr = itemstr
         self.priority = priority
 
+class editdata(forms.Form):
+    editapp = forms.CharField(widget= forms.Textarea( attrs={'class': 'editfieldcss'}), label="",required=True)
+    
 def list_entries():
     #Returns a list of all names of encyclopedia entries.
     _, filenames = default_storage.listdir("entries")
@@ -58,14 +62,19 @@ def to_htm(txtgiv):
     list_itm = False
     list_opened = False
     list_return_count = 0
+    ulstart = False
+    headlingtracked = False
 
     currenttrack=""
 
     for char in txtgiv:
 
         #linebreak
-        if (char == "\r" or char == "\n") and not head_opened and not list_opened:
-            converted += "<br>"
+        if (char == "\n") and not head_opened and not list_opened:
+            if headingtracked == False:
+                converted += "<br>"
+            else:
+                headingtracked = False
 
         #boldfacetext
         if char == "*":
@@ -125,7 +134,7 @@ def to_htm(txtgiv):
             link_opened = False
             converted += f"<a href ={link_ref}>{link_txt}<a>"
             link_ref = ""
-            link_txt = ""
+            link_txt = ""                                    
 
         #Unorderedlist
         if char == "-":
@@ -134,7 +143,7 @@ def to_htm(txtgiv):
             list_return_count = 0
         if list_itm == True and char != "-" and char != "\n" and char != "\r":
             list_text += char
-        if list_opened == True and char=="\n" or char=="\r":
+        if list_opened == True and char=="\n":
             list_return_count += 1
             list_itm=False
             if list_return_count <= 1:
@@ -148,7 +157,7 @@ def to_htm(txtgiv):
                 list_itm=False
                 list_opened=False
                 list_return_count = 0 
-                list_texts = []                                      
+                list_texts = [] 
 
         #headings
         if char == "#":
@@ -166,10 +175,11 @@ def to_htm(txtgiv):
                 hash_counting = False
 
         if (char == "\r" or char == "\n") and hash_counted:
-            converted += "</h1>"
+            converted +=  f"</h{hash_count}>"
             head_opened = False
             hash_counted = False
             hash_count = 0
+            headingtracked = True
                              
              
         if char != "#" and char != "\n" and char != "\r" and char != "*" and char != "[" and char != "]" and char != "(" and char != ")" and not link_opened and not list_opened:
@@ -178,6 +188,7 @@ def to_htm(txtgiv):
     return converted
 
 def searchfunction(cont,request):
+    editcheck = False
     if cont.is_valid():
             searched = cont.cleaned_data["searchcont"]
             listentries = False
@@ -196,8 +207,18 @@ def searchfunction(cont,request):
             i+=1
         newinst = sorted(newinst, key=operator.attrgetter('priority'), reverse = True) 
         for item in newinst:
-            if item.priority >= 1:
+            if item.priority >= 2:#pricision
                 items_found.append(item.itemstr)
-        return render(request, "encyclopedia/index.html", {"entries": items_found,"listcheck": listentries,"searchcont": Newsearch()})
+        return render(request, "encyclopedia/index.html", {"editcheck":editcheck,"entries": items_found,"listcheck": listentries,"searchcont": Newsearch()})
     else:
-        return render(request,"encyclopedia/index.html",{"fulltxt": markdown2.markdown(get_entry(searched)),"listcheck": listentries,"searchcont": Newsearch()})
+        return render(request,"encyclopedia/index.html",{"editcheck":editcheck,"fulltxt": markdown2.markdown(get_entry(searched)),"listcheck": listentries,"searchcont": Newsearch()})
+
+def editfunction(cont,request):
+    editcheck = True
+    listentries = False
+    if cont.is_valid():
+        datainp = cont.cleaned_data["editapp"]
+    #return render(request, "encyclopedia/index.html", {"fulltxt":markdown2.markdown(datainp),"editcheck":editcheck,"listcheck": listentries,"editapp": editdata()})
+    return render(request, "encyclopedia/index.html", {"fulltxt":to_htm(datainp),"editcheck":editcheck,"listcheck": listentries,"editapp": editdata()})
+
+

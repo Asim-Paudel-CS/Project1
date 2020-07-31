@@ -4,5 +4,6 @@ from . import views
 app_name = "homepage"
 urlpatterns = [
     path("", views.index, name="index"),
-    path("wiki/<str:titleinp>",views.content,name="content")
+    path("wiki/<str:titleinp>",views.content,name="content"),
+    path("edit",views.edit,name="edit")
 ]

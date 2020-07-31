@@ -21,4 +21,12 @@ Encyclopedia
     </ul>
     {% endif %}
     {{fulltxt|safe}}
+    {% if editcheck %}
+    <form action="{% url 'homepage:edit' %}" method="POST">
+        {% csrf_token %}
+        {{ editapp }}
+        <br>
+        <input type="submit" value="Save Changes">
+    </form>
+    {% endif %}
 {% endblock %}
