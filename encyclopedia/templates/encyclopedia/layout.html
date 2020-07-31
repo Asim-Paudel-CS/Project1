@@ -7,11 +7,12 @@
         <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="{% static 'encyclopedia/styles.css' %}">
+        <link rel='icon' href="{% static 'encyclopedia/favico.png' %}" type='image/x-icon'/ >
         <meta name="viewport" content="width=device-width", initial-scale=1.0">  
         <style>
         .pagebg{
             position: fixed;
-            background-image: url(static/encyclopedia/bg.jpg);
+            background-image: url({% static 'encyclopedia/bg.jpg' %});
             background-size: cover;
             height: 100vh;
             width: 100vw;
@@ -24,7 +25,10 @@
     <body>
         <div class=pagebg></div>
         <div class=topbar>
-            <div class="searchbar topsearchbar">               
+            <div class="searchbar topsearchbar">
+                <div class="topbutton">
+                    <a href="/"><div class="homebutton"><img src="{% static 'encyclopedia/homeicon.png' %}" width="30px">      HOME</div></a>
+                </div>             
                 <form action="{% url 'homepage:index' %}" method="POST">
                     {% csrf_token %}
                     {{ searchcont }}
@@ -34,6 +38,7 @@
         </div>
         <div class="row">
             <div class="col-lg-3 col-xl-3 d-none d-lg-block leftcolm">
+                <a href="/"><div class="lhomebutton"><img src="{% static 'encyclopedia/homeicon.png' %}" width="30px">&nbsp;&nbsp; Wikipedia Home</div></a>
                 <div class="headings">Search Our Wiki</div> 
                 <div class="searchbar">
                     <!--<form action="{% url 'homepage:index' %}" method="post">
