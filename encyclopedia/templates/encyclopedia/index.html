@@ -20,13 +20,25 @@ Encyclopedia
         {% endfor %}
     </ul>
     {% endif %}
-    {{fulltxt|safe}}
+
+    {% if customcheck %}
+    <form action="{% url 'homepage:custom' %}" method="POST">
+        {% csrf_token %}
+        {{ customapp }}
+        <br>
+        <div class = "preview"><input type="submit" value="Preview"></div>
+    </form>
+    {% endif %}
     {% if editcheck %}
+    {{righthead|safe}}    
     <form action="{% url 'homepage:edit' %}" method="POST">
         {% csrf_token %}
+        Title :
+        {{title}}
         {{ editapp }}
         <br>
         <input type="submit" value="Save Changes">
     </form>
     {% endif %}
+    {{fulltxt|safe}}
 {% endblock %}

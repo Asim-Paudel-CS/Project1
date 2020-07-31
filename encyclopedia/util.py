@@ -1,7 +1,7 @@
 import re
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django import forms
 import operator
 import markdown2
@@ -9,15 +9,24 @@ import markdown2
 class Newsearch(forms.Form):
     searchcont = forms.CharField(label="")
 
-
 class itmp():
     def __init__(self,itemstr,priority):
         self.itemstr = itemstr
         self.priority = priority
 
-class editdata(forms.Form):
-    editapp = forms.CharField(widget= forms.Textarea( attrs={'class': 'editfieldcss'}), label="",required=True)
-    
+class customdata(forms.Form):
+    customapp = forms.CharField(widget= forms.Textarea( attrs={'class': 'customfieldcss'}), label="",required=True)
+
+def tfunc(titleprog):
+    class titledata(forms.Form):
+        titleapp = forms.CharField(label="", initial = titleprog)
+    return titledata
+
+def dfunc(datafieldprog):
+    class editdata(forms.Form):
+        editapp = forms.CharField(widget= forms.Textarea( attrs={'class': 'editfieldcss'}), label="",required=True,initial = datafieldprog)
+    return editdata
+
 def list_entries():
     #Returns a list of all names of encyclopedia entries.
     _, filenames = default_storage.listdir("entries")
@@ -38,6 +47,38 @@ def get_entry(title):
         return f.read().decode("utf-8")
     except FileNotFoundError:
         return None
+
+def removeextrapath(pvar):
+    slashcount = 0
+    phr = "" #pathhostremoved
+    for char in pvar:
+        if slashcount >= 3:
+            phr += char
+        if char == "/":
+            slashcount += 1
+    i = 0
+    c = 0
+    wiki = False
+    for char in phr:
+        if i==0 and char == 'w':
+            c += 1
+        if i==1 and char == 'i':
+            c += 1
+        if i==2 and char == 'k':
+            c += 1
+        if i==3 and char == 'i':
+            c += 1
+        i+=1
+    pwr = "" #pathwikiremoved
+    i = 0
+    if  c == 4:
+        for char in phr:
+            if i>=5:
+                pwr += char
+            i+=1
+    else:
+        pwr = phr
+    return pwr
 
 def to_htm(txtgiv):
     converted=""
@@ -63,9 +104,11 @@ def to_htm(txtgiv):
     list_opened = False
     list_return_count = 0
     ulstart = False
-    headlingtracked = False
+    headingtracked = False
 
     currenttrack=""
+    proxy = ""
+    n_count = True
 
     for char in txtgiv:
 
@@ -146,18 +189,20 @@ def to_htm(txtgiv):
         if list_opened == True and char=="\n":
             list_return_count += 1
             list_itm=False
-            if list_return_count <= 1:
-                list_texts.append(list_text)
-            list_text=""
             if list_return_count > 1:
+                list_opened=False
                 converted += "<ul>"
                 for txt in list_texts:
                     converted += "<li>"+txt+"</li>"
-                converted += "</ul>"
+                converted += "</ul>" + proxy + "<br>"
                 list_itm=False
-                list_opened=False
                 list_return_count = 0 
-                list_texts = [] 
+                list_texts = []
+            if list_return_count == 1 and list_opened:
+                list_texts.append(list_text)
+            list_text=""
+        if not list_itm and list_opened:
+            proxy += char   
 
         #headings
         if char == "#":
@@ -200,6 +245,7 @@ def to_htm(txtgiv):
     return converted
 
 def searchfunction(cont,request):
+    customcheck = False
     editcheck = False
     if cont.is_valid():
             searched = cont.cleaned_data["searchcont"]
@@ -221,16 +267,17 @@ def searchfunction(cont,request):
         for item in newinst:
             if item.priority >= 2:#pricision
                 items_found.append(item.itemstr)
-        return render(request, "encyclopedia/index.html", {"editcheck":editcheck,"entries": items_found,"listcheck": listentries,"searchcont": Newsearch()})
+        return render(request, "encyclopedia/index.html", {"editcheck":editcheck,"customcheck":customcheck,"entries": items_found,"listcheck": listentries,"searchcont": Newsearch()})
     else:
-        return render(request,"encyclopedia/index.html",{"editcheck":editcheck,"fulltxt": markdown2.markdown(get_entry(searched)),"listcheck": listentries,"searchcont": Newsearch()})
+        return redirect(f'/wiki/{searched}')
 
-def editfunction(cont,request):
-    editcheck = True
+def customfunction(cont,request):
+    customcheck = True
+    editcheck = False
     listentries = False
     if cont.is_valid():
-        datainp = cont.cleaned_data["editapp"]
-    #return render(request, "encyclopedia/index.html", {"fulltxt":markdown2.markdown(datainp),"editcheck":editcheck,"listcheck": listentries,"editapp": editdata()})
-    return render(request, "encyclopedia/index.html", {"fulltxt":to_htm(datainp),"editcheck":editcheck,"listcheck": listentries,"editapp": editdata()})
+        datainp = cont.cleaned_data["customapp"]
+    return render(request, "encyclopedia/index.html", {"editcheck":editcheck,"fulltxt": to_htm(datainp),"customcheck":customcheck,"listcheck": listentries,"customapp": customdata(),"searchcont": Newsearch()})
 
-
+def editfunction(request):
+    return None

@@ -38,22 +38,34 @@
         </div>
         <div class="row">
             <div class="col-lg-3 col-xl-3 d-none d-lg-block leftcolm">
-                <a href="/"><div class="lhomebutton"><img src="{% static 'encyclopedia/homeicon.png' %}" width="30px">&nbsp;&nbsp; Wikipedia Home</div></a>
+                <a href="/">
+                    <div class="lhomebutton">
+                        <img src="{% static 'encyclopedia/homeicon.png' %}" width="30px">&nbsp; Wiki Home
+                    </div>
+                </a>
                 <div class="headings">Search Our Wiki</div> 
-                <div class="searchbar">
-                    <!--<form action="{% url 'homepage:index' %}" method="post">
-                        {% csrf_token %}
-                        <input type="text" name="task">
-                        <input type="submit">
-                    </form>-->                  
+                <div class="searchbar">                 
                     <form action="{% url 'homepage:index' %}" method="POST">
                         {% csrf_token %}
-                        {{ searchcont }}
-                        <br>
+                        {{ searchcont }}<br>
                         <input type="submit" value="SEARCH">
                     </form>
                 </div> 
-                <a href='/edit'>EDIT</a>
+                <a href="/customlanguage">
+                    <div class="lhomebutton">
+                        Custom MD language
+                    </div>
+                </a>
+                <a href="/addoredit">
+                    <div class="lhomebutton">
+                        Add/Modify Entries
+                    </div>
+                </a>
+                <a href="/wiki/git">
+                    <div class="lhomebutton">
+                        Git
+                    </div>
+                </a>
                 {%block sidebar %}         
                 {%endblock%}
             </div>
