@@ -51,30 +51,24 @@
                         <input type="submit" value="SEARCH">
                     </form>
                 </div> 
-                <a href="/customlanguage">
-                    <div class="lhomebutton">
-                        Custom MD language
-                    </div>
-                </a>
                 <a href="/addoredit">
                     <div class="lhomebutton">
                         Add/Modify Entries
                     </div>
                 </a>
-                <a href="/wiki/git">
-                    <div class="lhomebutton">
-                        Git
-                    </div>
-                </a>
                 {%block sidebar %}         
                 {%endblock%}
+                <a href="/customlanguage">
+                    <div class="lhomebutton">
+                        Custom MD language
+                    </div>
+                </a>       
             </div>
             <div class="col-lg-1 col-xl-1 d-none d-lg-block">
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7 col-xl-7 rightcolm">
                 {% block body %}
-                {% endblock %}
-                
+                {% endblock %}    
             </div>
             <div class="col-lg-1 col-xl-1 d-none d-lg-block">
             </div>

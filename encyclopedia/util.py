@@ -14,8 +14,10 @@ class itmp():
         self.itemstr = itemstr
         self.priority = priority
 
-class customdata(forms.Form):
-    customapp = forms.CharField(widget= forms.Textarea( attrs={'class': 'customfieldcss'}), label="",required=True)
+def cfunc(cprog):
+    class customdata(forms.Form):
+        customapp = forms.CharField(widget= forms.Textarea( attrs={'class': 'customfieldcss'}), label="",required=True, initial = cprog)
+    return customdata
 
 def tfunc(titleprog):
     class titledata(forms.Form):
@@ -78,6 +80,24 @@ def removeextrapath(pvar):
             i+=1
     else:
         pwr = phr
+
+    pathvar = pwr
+    newpath = ""
+    checkspace = 0
+    for char in pathvar:
+        if checkspace == 3:
+            newpath += " "
+            checkspace = 0
+        elif char == "%" and checkspace == 0:
+            checkspace += 1
+        elif checkspace == 1 and char == "2":
+            checkspace += 1
+        elif checkspace == 2 and char == "0":
+            checkspace += 1
+        if checkspace == 0:
+            newpath += char       
+    pwr = newpath
+
     return pwr
 
 def to_htm(txtgiv):
@@ -277,7 +297,7 @@ def customfunction(cont,request):
     listentries = False
     if cont.is_valid():
         datainp = cont.cleaned_data["customapp"]
-    return render(request, "encyclopedia/index.html", {"editcheck":editcheck,"fulltxt": to_htm(datainp),"customcheck":customcheck,"listcheck": listentries,"customapp": customdata(),"searchcont": Newsearch()})
+    return render(request, "encyclopedia/index.html", {"editcheck":editcheck,"fulltxt": to_htm(datainp),"customcheck":customcheck,"listcheck": listentries,"customapp": cfunc(datainp),"searchcont": Newsearch()})
 
 def editfunction(request):
     return None

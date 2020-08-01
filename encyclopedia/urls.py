@@ -6,5 +6,6 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("wiki/<str:titleinp>",views.content,name="content"),
     path("customlanguage",views.custom,name="custom"),
-    path("addoredit",views.edit,name="edit")
+    path("addoredit",views.edit,name="edit"),
+    path("delete",views.delete,name="delete")
 ]

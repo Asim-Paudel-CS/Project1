@@ -128,3 +128,34 @@
 .preview{
   text-align: center;
 }
+
+.no{
+  padding: 10px;
+  font-size: 20px;
+  display: inline-block;
+  box-shadow: 0 4px #999;
+  text-align: center;
+  color: black;
+  background-color: white;
+  
+  z-index: 3;
+  width: 50px;
+  height: auto;
+  overflow: hidden;
+}
+
+.no:hover {
+  cursor: pointer;
+  background-color: #c8c8c8;
+}
+
+.no:active {
+  cursor: pointer;
+  background-color: #c8c8c8;
+  box-shadow: 0 2px #666;
+  transform: translateY(2px);
+}
+
+.tocent{
+  text-align: center;
+}
